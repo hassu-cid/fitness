@@ -87,5 +87,6 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+
   assets:
-    - assets/images/fitness_logo.png
+      - assets/images/welcome_bg.png

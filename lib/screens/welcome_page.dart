@@ -8,151 +8,151 @@ class WelcomePage extends StatefulWidget {
 }
 
 class _WelcomePageState extends State<WelcomePage>
-    with TickerProviderStateMixin {
-  late AnimationController _logoController;
-  late AnimationController _buttonController;
-  late Animation<double> _logoAnimation;
-  late Animation<Offset> _buttonAnimation;
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _fadeIn;
+  late Animation<Offset> _slideUp;
 
   @override
   void initState() {
     super.initState();
 
-    // Logo Fade-in
-    _logoController =
-        AnimationController(vsync: this, duration: const Duration(seconds: 2));
-    _logoAnimation = CurvedAnimation(
-      parent: _logoController,
-      curve: Curves.easeIn,
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 2),
     );
-    _logoController.forward();
 
-    // Button Slide-up
-    _buttonController =
-        AnimationController(vsync: this, duration: const Duration(seconds: 1));
-    _buttonAnimation = Tween<Offset>(
-      begin: const Offset(0, 1), // starts off screen
-      end: Offset.zero,
-    ).animate(CurvedAnimation(
-      parent: _buttonController,
-      curve: Curves.easeOut,
-    ));
+    _fadeIn = CurvedAnimation(parent: _controller, curve: Curves.easeIn);
+    _slideUp = Tween<Offset>(begin: const Offset(0, 0.2), end: Offset.zero)
+        .animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
 
-    Future.delayed(const Duration(milliseconds: 1500), () {
-      _buttonController.forward();
-    });
+    _controller.forward();
   }
 
   @override
   void dispose() {
-    _logoController.dispose();
-    _buttonController.dispose();
+    _controller.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final Size size = MediaQuery.of(context).size;
-    final bool isDark = Theme.of(context).brightness == Brightness.dark;
+    final size = MediaQuery.of(context).size;
+    final double titleSize = size.width * 0.1; // Responsive title
+    final double taglineSize = size.width * 0.035; // Responsive tagline
+    final double buttonHeight = size.height * 0.07; // Button adjusts
+    final double spacing = size.height * 0.03; // Spacing adjusts
 
     return Scaffold(
-      body: SafeArea(
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            return SingleChildScrollView(
-              child: ConstrainedBox(
-                constraints: BoxConstraints(minHeight: constraints.maxHeight),
-                child: IntrinsicHeight(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      // Logo with fade-in animation
-                      FadeTransition(
-                        opacity: _logoAnimation,
-                        child: Container(
-                          height: size.height * 0.3,
-                          width: size.width * 0.6,
-                          decoration: const BoxDecoration(
-                            image: DecorationImage(
-                              image: AssetImage("assets/images/fitness_logo.png"),
-                              fit: BoxFit.contain,
-                            ),
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage("assets/images/welcome_bg.png"),
+            fit: BoxFit.cover, // Ensures full coverage across devices
+          ),
+        ),
+        child: Stack(
+          children: [
+            // Transparent overlay (instead of dark overlay)
+            Container(color: Colors.transparent),
+
+            // Decorative accent
+            Positioned(
+              right: 20,
+              bottom: 20,
+              child: Icon(Icons.star, color: Colors.white24, size: size.width * 0.08),
+            ),
+
+            // Content
+            SafeArea(
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: size.width * 0.07),
+                child: FadeTransition(
+                  opacity: _fadeIn,
+                  child: SlideTransition(
+                    position: _slideUp,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        SizedBox(height: spacing * 1.2),
+
+                        // Title
+                        Text(
+                          "FYT LYF",
+                          style: TextStyle(
+                            fontSize: titleSize.clamp(28, 50), // clamp for extreme screens
+                            fontWeight: FontWeight.bold,
+                            color: Colors.redAccent,
+                            letterSpacing: 2,
                           ),
                         ),
-                      ),
 
-                      SizedBox(height: size.height * 0.04),
+                        SizedBox(height: spacing * 0.4),
 
-                      // Title
-                      Text(
-                        "Welcome to Fitness App",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: size.width * 0.07,
-                          fontWeight: FontWeight.bold,
-                          color: isDark ? Colors.white : Colors.black87,
-                        ),
-                      ),
-
-                      SizedBox(height: size.height * 0.02),
-
-                      // Subtitle
-                      Padding(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: size.width * 0.08,
-                        ),
-                        child: Text(
-                          "Your personal fitness companion.\nTrack, train, and transform your lifestyle.",
+                        // Tagline
+                        Text(
+                          "FEEL YOUR TRANSFORMATION LOVE YOUR FITNESS",
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                            fontSize: size.width * 0.045,
-                            color: isDark ? Colors.grey[300] : Colors.grey[700],
+                            fontSize: taglineSize.clamp(12, 18),
+                            color: Colors.white70,
+                            letterSpacing: 1,
                           ),
                         ),
-                      ),
 
-                      const Spacer(),
+                        const Spacer(),
 
-                      // Animated Get Started Button
-                      Padding(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: size.width * 0.1,
-                          vertical: size.height * 0.03,
-                        ),
-                        child: SlideTransition(
-                          position: _buttonAnimation,
-                          child: SizedBox(
-                            width: double.infinity,
-                            height: size.height * 0.07,
-                            child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.blueAccent,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(15),
-                                ),
+                        // Get Started Button
+                        SizedBox(
+                          width: double.infinity,
+                          height: buttonHeight.clamp(45, 65),
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.redAccent,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(30),
                               ),
-                              onPressed: () {
-                                // TODO: Navigate to next screen
-                                // Example: Navigator.pushNamed(context, '/login');
-                              },
-                              child: Text(
-                                "Get Started",
-                                style: TextStyle(
-                                  fontSize: size.width * 0.05,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
-                                ),
+                            ),
+                            onPressed: () {
+                              Navigator.pushNamed(context, '/onboarding');
+                            },
+                            child: Text(
+                              "GET STARTED",
+                              style: TextStyle(
+                                fontSize: (taglineSize * 1.2).clamp(14, 22),
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
                               ),
                             ),
                           ),
                         ),
-                      ),
-                    ],
+
+                        SizedBox(height: spacing * 0.5),
+
+                        // Login Text
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.pushNamed(context, '/login');
+                          },
+                          child: Text(
+                            "Already a member? Log in",
+                            style: TextStyle(
+                              color: Colors.white70,
+                              fontSize: taglineSize.clamp(12, 16),
+                            ),
+                          ),
+                        ),
+
+                        SizedBox(height: spacing),
+                      ],
+                    ),
                   ),
                 ),
               ),
-            );
-          },
+            ),
+          ],
         ),
       ),
     );
