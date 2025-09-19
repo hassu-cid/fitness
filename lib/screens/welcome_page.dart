@@ -58,13 +58,6 @@ class _WelcomePageState extends State<WelcomePage>
             // Transparent overlay (instead of dark overlay)
             Container(color: Colors.transparent),
 
-            // Decorative accent
-            Positioned(
-              right: 20,
-              bottom: 20,
-              child: Icon(Icons.star, color: Colors.white24, size: size.width * 0.08),
-            ),
-
             // Content
             SafeArea(
               child: Padding(
