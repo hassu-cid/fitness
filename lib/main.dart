@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-//hassu-cid
+
 void main() {
   runApp(const MyApp());
 }
