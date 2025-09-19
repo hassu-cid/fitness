@@ -86,7 +86,17 @@ class _WelcomePageState extends State<WelcomePage>
 
                         // Tagline
                         Text(
-                          "FEEL YOUR TRANSFORMATION LOVE YOUR FITNESS",
+                          "FEEL YOUR TRANSFORMATION",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: taglineSize.clamp(12, 18),
+                            color: Colors.white70,
+                            letterSpacing: 1,
+                          ),
+                        ),
+
+                        Text(
+                          "LOVE YOUR FITNESS",
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: taglineSize.clamp(12, 18),
