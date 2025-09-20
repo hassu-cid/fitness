@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'onboarding1_screen.dart'; // ✅ Import Onboarding1
 
 class WelcomeScreen extends StatefulWidget {
   const WelcomeScreen({super.key});
@@ -164,15 +165,16 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                             // Get Started button
                             ElevatedButton(
                               onPressed: () {
-                                print('Get Started Pressed!');
+                                // ✅ Navigate to Onboarding1
+                                Navigator.pushReplacementNamed(
+                                    context, Onboarding1Screen.routeName);
                               },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.red,
                                 shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(18.0),
+                                  borderRadius: BorderRadius.circular(20.0),
                                 ),
                                 minimumSize: Size(buttonWidth, buttonHeight),
-                                // ✅ Compact padding
                                 padding: const EdgeInsets.symmetric(
                                   horizontal: 20,
                                   vertical: 8,
@@ -188,7 +190,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                               ),
                             ),
 
-                            const SizedBox(height: 0), // Space between button and login
+                            const SizedBox(height: 0),
 
                             // Login text
                             Row(
@@ -217,7 +219,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                               ],
                             ),
 
-                            const SizedBox(height: 40), // Space below login
+                            const SizedBox(height: 40),
                           ],
                         ),
                       ),

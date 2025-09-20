@@ -1,19 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+
+// Screens
 import 'screens/splash_screen.dart';
 import 'screens/welcome_screen.dart';
+import 'screens/onboarding1_screen.dart';
+import 'screens/onboarding2_screen.dart';
 
-void main() {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Lock orientation to portrait
-  SystemChrome.setPreferredOrientations([
+  // ✅ Lock orientation to portrait only
+  await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
-  ]).then((_) {
-    runApp(const MyApp());
-  });
+  ]);
+
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -22,8 +26,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
       title: 'FYT LYF',
+      debugShowCheckedModeBanner: false,
+
+      // ✅ Theme setup (future-proof & reusable)
       theme: ThemeData(
         primarySwatch: Colors.red,
         scaffoldBackgroundColor: Colors.black,
@@ -41,11 +47,22 @@ class MyApp extends StatelessWidget {
           systemOverlayStyle: SystemUiOverlayStyle.light,
         ),
       ),
+
+      // ✅ Entry point
       initialRoute: SplashScreen.routeName,
+
+      // ✅ Centralized routes (easy to manage in future)
       routes: {
-        SplashScreen.routeName: (context) => const SplashScreen(),
-        WelcomeScreen.routeName: (context) => const WelcomeScreen(),
+        SplashScreen.routeName: (_) => const SplashScreen(),
+        WelcomeScreen.routeName: (_) => const WelcomeScreen(),
+        Onboarding1Screen.routeName: (_) => const Onboarding1Screen(),
+        Onboarding2Screen.routeName: (_) => const Onboarding2Screen(),
       },
+
+      // ✅ Prevents navigation errors (safety fallback)
+      onUnknownRoute: (settings) => MaterialPageRoute(
+        builder: (_) => const SplashScreen(),
+      ),
     );
   }
 }
