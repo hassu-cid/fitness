@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'welcome_screen.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -51,13 +52,28 @@ class _SplashScreenState extends State<SplashScreen>
     return Scaffold(
       backgroundColor: Colors.black,
       body: Center(
-        child: ScaleTransition(
-          scale: _animation,
-          child: Image.asset(
-            "assets/images/splash.png",
-            width: size.width * 0.6,
-            height: size.height * 0.6,
-            fit: BoxFit.contain,
+        child: FadeTransition(
+          opacity: _animation,
+          child: ScaleTransition(
+            scale: _animation,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset(
+                  "assets/images/splash.png",
+                  width: size.width * 0.6,
+                  fit: BoxFit.contain,
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  "FYT LYF",
+                  style: GoogleFonts.pottaOne(
+                    fontSize: size.width * 0.09,
+                    color: Colors.white,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
