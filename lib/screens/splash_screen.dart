@@ -16,6 +16,8 @@ class _SplashScreenState extends State<SplashScreen>
   late final Animation<double> _fadeAnimation;
   late final Animation<double> _scaleAnimation;
   late final Animation<double> _glowAnimation;
+  late final Animation<double> _logoScaleAnimation;
+  late final Animation<double> _logoFadeAnimation;
 
   @override
   void initState() {
@@ -26,31 +28,55 @@ class _SplashScreenState extends State<SplashScreen>
       duration: const Duration(seconds: 2),
     );
 
+    // Text animations
     _fadeAnimation = CurvedAnimation(
       parent: _controller,
       curve: Curves.easeIn,
     );
-
-    _scaleAnimation = Tween<double>(begin: 0.9, end: 1.0).animate(
+    _scaleAnimation = Tween<double>(begin: 0.8, end: 1.0).animate(
       CurvedAnimation(
         parent: _controller,
         curve: Curves.elasticOut,
       ),
     );
-
-    _glowAnimation = Tween<double>(begin: 0.0, end: 18.0).animate(
+    _glowAnimation = Tween<double>(begin: 0.0, end: 20.0).animate(
       CurvedAnimation(
         parent: _controller,
         curve: Curves.easeInOut,
       ),
     );
 
+    // Logo animations
+    _logoScaleAnimation = Tween<double>(begin: 0.7, end: 1.0).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.elasticOut),
+    );
+    _logoFadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeIn),
+    );
+
     _controller.forward();
 
-    // Navigate after 3 seconds
+    // Smooth transition to WelcomeScreen
     Future.delayed(const Duration(seconds: 3), () {
       if (mounted) {
-        Navigator.pushReplacementNamed(context, WelcomeScreen.routeName);
+        Navigator.of(context).pushReplacement(
+          PageRouteBuilder(
+            pageBuilder: (_, __, ___) => const WelcomeScreen(),
+            transitionDuration: const Duration(milliseconds: 800),
+            transitionsBuilder: (_, animation, __, child) {
+              return FadeTransition(
+                opacity: animation,
+                child: SlideTransition(
+                  position: Tween<Offset>(
+                    begin: const Offset(0, 0.2),
+                    end: Offset.zero,
+                  ).animate(animation),
+                  child: child,
+                ),
+              );
+            },
+          ),
+        );
       }
     });
   }
@@ -61,10 +87,19 @@ class _SplashScreenState extends State<SplashScreen>
     super.dispose();
   }
 
+  double _getResponsiveFontSize(double screenWidth, double screenHeight) {
+    return screenWidth * 0.09 + screenHeight * 0.015;
+  }
+
+  double _getResponsiveSpacing(double screenHeight) {
+    return screenHeight * 0.03;
+  }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    final double fontSize = size.width * 0.09;
+    final double fontSize = _getResponsiveFontSize(size.width, size.height);
+    final double spacing = _getResponsiveSpacing(size.height);
 
     return Scaffold(
       backgroundColor: Colors.black,
@@ -75,12 +110,26 @@ class _SplashScreenState extends State<SplashScreen>
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Image.asset(
-                  "assets/images/splash.png",
-                  width: size.width * 0.6,
-                  fit: BoxFit.contain,
+                // Animated Logo
+                AnimatedBuilder(
+                  animation: _controller,
+                  builder: (context, child) {
+                    return Opacity(
+                      opacity: _logoFadeAnimation.value,
+                      child: Transform.scale(
+                        scale: _logoScaleAnimation.value,
+                        child: Image.asset(
+                          "assets/images/splash.png",
+                          width: size.width * 0.4,
+                          fit: BoxFit.contain,
+                        ),
+                      ),
+                    );
+                  },
                 ),
-                const SizedBox(height: 24),
+
+
+                // Animated Text
                 AnimatedBuilder(
                   animation: _controller,
                   builder: (context, child) {
@@ -92,12 +141,17 @@ class _SplashScreenState extends State<SplashScreen>
                           "FYT LYF",
                           textAlign: TextAlign.center,
                           style: GoogleFonts.pottaOne(
-                            fontSize: fontSize,
+                            fontSize: 35,
                             color: Colors.white,
                             shadows: [
                               Shadow(
                                 blurRadius: _glowAnimation.value,
-                                color: Colors.redAccent.withOpacity(0.8),
+                                color: Colors.redAccent.withOpacity(0.85),
+                                offset: const Offset(0, 0),
+                              ),
+                              Shadow(
+                                blurRadius: _glowAnimation.value / 2,
+                                color: Colors.orangeAccent.withOpacity(0.6),
                                 offset: const Offset(0, 0),
                               ),
                             ],
@@ -106,7 +160,7 @@ class _SplashScreenState extends State<SplashScreen>
                       ),
                     );
                   },
-                ),
+                ),SizedBox(height: 100),
               ],
             ),
           ),
