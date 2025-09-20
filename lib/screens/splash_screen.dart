@@ -1,9 +1,10 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'welcome_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
+  static const String routeName = '/splash';
 
   @override
   State<SplashScreen> createState() => _SplashScreenState();
@@ -11,30 +12,46 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen>
     with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<double> _animation;
+  late final AnimationController _controller;
+  late final Animation<double> _fadeAnimation;
+  late final Animation<double> _scaleAnimation;
+  late final Animation<double> _glowAnimation;
 
   @override
   void initState() {
     super.initState();
 
     _controller = AnimationController(
-      duration: const Duration(seconds: 2),
       vsync: this,
+      duration: const Duration(seconds: 2),
     );
 
-    _animation = CurvedAnimation(
+    _fadeAnimation = CurvedAnimation(
       parent: _controller,
-      curve: Curves.easeInOut,
+      curve: Curves.easeIn,
+    );
+
+    _scaleAnimation = Tween<double>(begin: 0.9, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: Curves.elasticOut,
+      ),
+    );
+
+    _glowAnimation = Tween<double>(begin: 0.0, end: 18.0).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: Curves.easeInOut,
+      ),
     );
 
     _controller.forward();
 
-    Timer(const Duration(seconds: 4), () {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const WelcomeScreen()),
-      );
+    // Navigate after 3 seconds
+    Future.delayed(const Duration(seconds: 3), () {
+      if (mounted) {
+        Navigator.pushReplacementNamed(context, WelcomeScreen.routeName);
+      }
     });
   }
 
@@ -47,17 +64,51 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+    final double fontSize = size.width * 0.09;
 
     return Scaffold(
       backgroundColor: Colors.black,
-      body: Center(
-        child: ScaleTransition(
-          scale: _animation,
-          child: Image.asset(
-            "assets/images/splash.png",
-            width: size.width * 0.6,
-            height: size.height * 0.6,
-            fit: BoxFit.contain,
+      body: SafeArea(
+        child: Center(
+          child: SingleChildScrollView(
+            physics: const BouncingScrollPhysics(),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset(
+                  "assets/images/splash.png",
+                  width: size.width * 0.6,
+                  fit: BoxFit.contain,
+                ),
+                const SizedBox(height: 24),
+                AnimatedBuilder(
+                  animation: _controller,
+                  builder: (context, child) {
+                    return Opacity(
+                      opacity: _fadeAnimation.value,
+                      child: Transform.scale(
+                        scale: _scaleAnimation.value,
+                        child: Text(
+                          "FYT LYF",
+                          textAlign: TextAlign.center,
+                          style: GoogleFonts.pottaOne(
+                            fontSize: fontSize,
+                            color: Colors.white,
+                            shadows: [
+                              Shadow(
+                                blurRadius: _glowAnimation.value,
+                                color: Colors.redAccent.withOpacity(0.8),
+                                offset: const Offset(0, 0),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ],
+            ),
           ),
         ),
       ),
