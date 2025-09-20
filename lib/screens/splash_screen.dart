@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'welcome_screen.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -62,7 +61,7 @@ class _SplashScreenState extends State<SplashScreen>
         Navigator.of(context).pushReplacement(
           PageRouteBuilder(
             pageBuilder: (_, __, ___) => const WelcomeScreen(),
-            transitionDuration: const Duration(milliseconds: 800),
+            transitionDuration: const Duration(milliseconds: 900),
             transitionsBuilder: (_, animation, __, child) {
               return FadeTransition(
                 opacity: animation,
@@ -70,7 +69,10 @@ class _SplashScreenState extends State<SplashScreen>
                   position: Tween<Offset>(
                     begin: const Offset(0, 0.2),
                     end: Offset.zero,
-                  ).animate(animation),
+                  ).animate(CurvedAnimation(
+                    parent: animation,
+                    curve: Curves.easeOutCubic,
+                  )),
                   child: child,
                 ),
               );
@@ -129,7 +131,8 @@ class _SplashScreenState extends State<SplashScreen>
                 ),
 
 
-                // Animated Text
+
+                // Animated Text with PottaOne font
                 AnimatedBuilder(
                   animation: _controller,
                   builder: (context, child) {
@@ -140,20 +143,20 @@ class _SplashScreenState extends State<SplashScreen>
                         child: Text(
                           "FYT LYF",
                           textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontFamily: "PottaOne", // must match pubspec.yaml
-                            fontSize: 42,
+                          style: const TextStyle(
+                            fontFamily: "PottaOne", // ✅ Custom font
+                            fontSize: 35,
                             color: Colors.white,
                             shadows: [
                               Shadow(
-                                blurRadius: _glowAnimation.value,
-                                color: Colors.redAccent.withOpacity(0.85),
-                                offset: const Offset(0, 0),
+                                blurRadius: 20,
+                                color: Colors.redAccent,
+                                offset: Offset(0, 0),
                               ),
                               Shadow(
-                                blurRadius: _glowAnimation.value / 2,
-                                color: Colors.orangeAccent.withOpacity(0.6),
-                                offset: const Offset(0, 0),
+                                blurRadius: 10,
+                                color: Colors.orangeAccent,
+                                offset: Offset(0, 0),
                               ),
                             ],
                           ),
@@ -161,7 +164,9 @@ class _SplashScreenState extends State<SplashScreen>
                       ),
                     );
                   },
-                ),SizedBox(height: 100),
+                ),
+
+                SizedBox(height: 100),
               ],
             ),
           ),

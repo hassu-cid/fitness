@@ -1,9 +1,49 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
-class WelcomeScreen extends StatelessWidget {
+class WelcomeScreen extends StatefulWidget {
   const WelcomeScreen({super.key});
   static const String routeName = '/welcome';
+
+  @override
+  State<WelcomeScreen> createState() => _WelcomeScreenState();
+}
+
+class _WelcomeScreenState extends State<WelcomeScreen>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _fadeIn;
+  late Animation<Offset> _slideIn;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1200),
+    );
+
+    _fadeIn = CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeIn,
+    );
+
+    _slideIn = Tween<Offset>(
+      begin: const Offset(0, 0.3),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeOutCubic,
+    ));
+
+    _controller.forward();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -12,53 +52,40 @@ class WelcomeScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.black,
       body: SafeArea(
-        child: Center(
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: size.width * 0.08),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  "Welcome to FYT LYF",
-                  textAlign: TextAlign.center,
-                  style: GoogleFonts.pottaOne(
-                    fontSize: size.width * 0.09,
-                    color: Colors.white,
+        child: FadeTransition(
+          opacity: _fadeIn,
+          child: SlideTransition(
+            position: _slideIn,
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset(
+                    "assets/images/splash.png",
+                    width: size.width * 0.35,
                   ),
-                ),
-                const SizedBox(height: 24),
-                Text(
-                  "Your ultimate fitness companion.\nTrack workouts, calories, and more.",
-                  textAlign: TextAlign.center,
-                  style: GoogleFonts.pottaOne(
-                    fontSize: size.width * 0.05,
-                    color: Colors.white70,
-                  ),
-                ),
-                const SizedBox(height: 40),
-                ElevatedButton(
-                  onPressed: () {
-                    // TODO: Navigate to the next screen (e.g., HomeScreen)
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.redAccent,
-                    padding: EdgeInsets.symmetric(
-                      horizontal: size.width * 0.15,
-                      vertical: 16,
-                    ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                  ),
-                  child: Text(
-                    "Get Started",
-                    style: GoogleFonts.pottaOne(
-                      fontSize: size.width * 0.06,
+                  const SizedBox(height: 30),
+                  const Text(
+                    "Welcome to FYT LYF",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontFamily: "PottaOne", // ✅ Keeping same font
+                      fontSize: 32,
                       color: Colors.white,
+                      letterSpacing: 1.5,
                     ),
                   ),
-                ),
-              ],
+                  const SizedBox(height: 15),
+                  const Text(
+                    "Your journey starts here 🚀",
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: Colors.grey,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
