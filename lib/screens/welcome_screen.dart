@@ -18,8 +18,6 @@ class _WelcomeScreenState extends State<WelcomeScreen>
 
   // Adjustable horizontal space before FYT LYF and tagline
   final double horizontalOffset = 20.0; // change this to move text horizontally
-  // Adjustable vertical spacing between elements
-  final double verticalSpacing = 20.0;
 
   @override
   void initState() {
@@ -53,18 +51,14 @@ class _WelcomeScreenState extends State<WelcomeScreen>
     final size = MediaQuery.of(context).size;
 
     // Dynamic font sizes
-    final double logoFontSize = size.width * 0.12;
-    final double taglineFontSize = size.width * 0.045;
+    final double logoFontSize = size.width * 0.09;
+    final double taglineFontSize = size.width * 0.035;
     final double loginTextFontSize = size.width * 0.035;
     final double buttonFontSize = size.width * 0.05;
 
-    // Dynamic button size
-    final double buttonWidth = size.width > 800
-        ? size.width * 0.5
-        : size.width < 350
-        ? size.width * 0.9
-        : size.width * 0.8;
-    final double buttonHeight = size.height * 0.07;
+    // ✅ Smaller button size
+    final double buttonWidth = size.width * 0.8;
+    final double buttonHeight = size.height * 0.055;
 
     return Scaffold(
       body: FadeTransition(
@@ -105,7 +99,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              SizedBox(height: 30), // Top spacing
+                              const SizedBox(height: 30), // Top spacing
 
                               // FYT LYF with glow
                               Text(
@@ -129,7 +123,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                                   ],
                                 ),
                               ),
-                              SizedBox(height: 2),
+                              const SizedBox(height: 2),
 
                               // Tagline
                               Column(
@@ -175,11 +169,14 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.red,
                                 shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20.0),
+                                  borderRadius: BorderRadius.circular(18.0),
                                 ),
                                 minimumSize: Size(buttonWidth, buttonHeight),
-                                padding: EdgeInsets.symmetric(
-                                    vertical: verticalSpacing),
+                                // ✅ Compact padding
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 20,
+                                  vertical: 8,
+                                ),
                               ),
                               child: Text(
                                 "GET STARTED",
@@ -191,7 +188,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                               ),
                             ),
 
-                            SizedBox(height: 0), // Space between button and login
+                            const SizedBox(height: 0), // Space between button and login
 
                             // Login text
                             Row(
@@ -220,7 +217,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                               ],
                             ),
 
-                            SizedBox(height: 40), // Space below login
+                            const SizedBox(height: 40), // Space below login
                           ],
                         ),
                       ),
