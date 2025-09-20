@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'welcome_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -10,88 +10,55 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen>
-    with TickerProviderStateMixin {
-  late AnimationController _logoController;
-  late AnimationController _textController;
-  late Animation<double> _logoAnimation;
-  late Animation<double> _textAnimation;
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _animation;
 
   @override
   void initState() {
     super.initState();
 
-    // Logo Animation (Zoom In)
-    _logoController =
-        AnimationController(vsync: this, duration: const Duration(seconds: 2));
-    _logoAnimation = CurvedAnimation(
-      parent: _logoController,
-      curve: Curves.elasticOut,
-    );
-    _logoController.forward();
-
-    // Text Animation (Fade In)
-    _textController =
-        AnimationController(vsync: this, duration: const Duration(seconds: 2));
-    _textAnimation = CurvedAnimation(
-      parent: _textController,
-      curve: Curves.easeIn,
+    _controller = AnimationController(
+      duration: const Duration(seconds: 2),
+      vsync: this,
     );
 
-    // Delay text fade-in slightly after logo
-    Future.delayed(const Duration(milliseconds: 800), () {
-      _textController.forward();
-    });
+    _animation = CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeInOut,
+    );
 
-    // Navigate to WelcomePage after 4 sec
+    _controller.forward();
+
     Timer(const Duration(seconds: 4), () {
-      Navigator.pushReplacementNamed(context, '/welcome');
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const WelcomeScreen()),
+      );
     });
   }
 
   @override
   void dispose() {
-    _logoController.dispose();
-    _textController.dispose();
+    _controller.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final Size size = MediaQuery.of(context).size;
+    final size = MediaQuery.of(context).size;
 
     return Scaffold(
       backgroundColor: Colors.black,
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            // Logo Zoom-in
-            ScaleTransition(
-              scale: _logoAnimation,
-              child: Image.asset(
-                "assets/images/fitness_logo.png",
-                height: size.height * 0.35,
-                width: size.width * 0.6,
-                fit: BoxFit.contain,
-              ),
-            ),
-
-            SizedBox(height: size.height * 0.04),
-
-            // Text Fade-in
-            FadeTransition(
-              opacity: _textAnimation,
-              child: Text(
-                "FYT LYF",
-                style: GoogleFonts.pottaOne(
-                  fontSize: size.width * 0.1,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                  letterSpacing: 2,
-                ),
-              ),
-            ),
-          ],
+        child: ScaleTransition(
+          scale: _animation,
+          child: Image.asset(
+            "assets/images/splash.png",
+            width: size.width * 0.6,
+            height: size.height * 0.6,
+            fit: BoxFit.contain,
+          ),
         ),
       ),
     );
