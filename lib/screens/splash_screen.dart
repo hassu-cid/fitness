@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'welcome_screen.dart';
@@ -10,40 +9,62 @@ class SplashScreen extends StatefulWidget {
   State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> {
-  static const String fullText = "FYT LYF";
-  late final List<bool> _visible;
-  int _currentIndex = 0;
-  Timer? _timer;
+class _SplashScreenState extends State<SplashScreen>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+  late final Animation<double> _fadeAnimation;
+  late final Animation<double> _scaleAnimation;
+  late final Animation<double> _glowAnimation;
 
   @override
   void initState() {
     super.initState();
-    _visible = List<bool>.filled(fullText.length, false);
 
-    // Reveal one letter at a time
-    const letterDelay = Duration(milliseconds: 220);
-    _timer = Timer.periodic(letterDelay, (timer) {
-      if (_currentIndex < fullText.length) {
-        setState(() {
-          _visible[_currentIndex] = true;
-          _currentIndex++;
-        });
-      } else {
-        _timer?.cancel();
-        Future.delayed(const Duration(milliseconds: 900), () {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const WelcomeScreen()),
-          );
-        });
+    // Animation controller for all effects
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 2),
+    );
+
+    // Fade-in from 0 to 1
+    _fadeAnimation = CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeIn,
+    );
+
+    // Scale effect: small pop from 0.9 to 1.0
+    _scaleAnimation = Tween<double>(begin: 0.9, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: Curves.elasticOut,
+      ),
+    );
+
+    // Glow pulse effect: subtle shimmer on text
+    _glowAnimation = Tween<double>(begin: 0.0, end: 18.0).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: Curves.easeInOut,
+      ),
+    );
+
+    // Start animation
+    _controller.forward();
+
+    // Navigate to WelcomeScreen after animation completes + delay
+    Future.delayed(const Duration(seconds: 3), () {
+      if (mounted) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => const WelcomeScreen()),
+        );
       }
     });
   }
 
   @override
   void dispose() {
-    _timer?.cancel();
+    _controller.dispose();
     super.dispose();
   }
 
@@ -58,90 +79,44 @@ class _SplashScreenState extends State<SplashScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Logo
+            // Logo (static)
             Image.asset(
               "assets/images/splash.png",
               width: size.width * 0.6,
               fit: BoxFit.contain,
             ),
+            const SizedBox(height: 16),
 
-            const SizedBox(height: 8),
-
-            // Prevents overflow
-            FittedBox(
-              fit: BoxFit.scaleDown,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: List<Widget>.generate(fullText.length, (index) {
-                  final ch = fullText[index];
-                  if (ch == ' ') {
-                    return SizedBox(width: fontSize * 0.35);
-                  }
-                  return _AnimatedLetter(
-                    key: ValueKey('letter_$index'),
-                    letter: ch,
-                    visible: _visible[index],
-                    fontSize: fontSize,
-                  );
-                }),
-              ),
+            // Cinematic text with fade + scale + glow
+            AnimatedBuilder(
+              animation: _controller,
+              builder: (context, child) {
+                return Opacity(
+                  opacity: _fadeAnimation.value,
+                  child: Transform.scale(
+                    scale: _scaleAnimation.value,
+                    child: Text(
+                      "FYT LYF",
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.pottaOne(
+                        fontSize: fontSize,
+                        color: Colors.white,
+                        shadows: [
+                          Shadow(
+                            blurRadius: _glowAnimation.value,
+                            color: Colors.redAccent.withOpacity(0.8),
+                            offset: const Offset(0, 0),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              },
             ),
           ],
         ),
       ),
-    );
-  }
-}
-
-class _AnimatedLetter extends StatelessWidget {
-  final String letter;
-  final bool visible;
-  final double fontSize;
-
-  const _AnimatedLetter({
-    super.key,
-    required this.letter,
-    required this.visible,
-    required this.fontSize,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return TweenAnimationBuilder<double>(
-      tween: Tween<double>(
-        begin: 0.0,
-        end: visible ? 1.0 : 0.0,
-      ),
-      duration: const Duration(milliseconds: 420),
-      curve: Curves.easeOutBack,
-      builder: (context, value, child) {
-        // Clamp to avoid invalid opacity
-        final double opacity = value.clamp(0.0, 1.0);
-        final double scale = 0.55 + 0.45 * opacity;
-        final double blur = 18.0 * opacity;
-        final Color glowColor = Colors.redAccent.withOpacity(0.9 * opacity);
-
-        return Opacity(
-          opacity: opacity,
-          child: Transform.scale(
-            scale: scale,
-            child: Text(
-              letter,
-              style: GoogleFonts.pottaOne(
-                fontSize: fontSize,
-                color: Colors.white,
-                shadows: [
-                  Shadow(
-                    blurRadius: blur,
-                    color: glowColor,
-                    offset: const Offset(0, 0),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        );
-      },
     );
   }
 }
