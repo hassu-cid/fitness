@@ -140,8 +140,9 @@ class _SplashScreenState extends State<SplashScreen>
                         child: Text(
                           "FYT LYF",
                           textAlign: TextAlign.center,
-                          style: GoogleFonts.pottaOne(
-                            fontSize: 35,
+                          style: TextStyle(
+                            fontFamily: "PottaOne", // must match pubspec.yaml
+                            fontSize: 42,
                             color: Colors.white,
                             shadows: [
                               Shadow(
