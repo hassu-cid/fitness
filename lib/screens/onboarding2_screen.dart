@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../ui/adaptive.dart';
 import '../ui/transitions.dart';
 import 'age_screen.dart';
+import '../widgets/PrimaryButton.dart';
 
 class Onboarding2Screen extends StatefulWidget {
   static const routeName = '/onboarding2';
@@ -32,92 +33,43 @@ class _Onboarding2ScreenState extends State<Onboarding2Screen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // Progress + Skip
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: LinearProgressIndicator(
-                        value: 0.5,
-                        minHeight: 4,
-                        borderRadius: BorderRadius.circular(8),
-                        color: Colors.red,
-                        backgroundColor: const Color(0xFFE5E7EB),
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    GestureDetector(
-                      onTap: () => Navigator.of(context).push(slideFadeRoute(const AgeScreen())),
-                      child: Text(
-                        'Skip',
-                        style: GoogleFonts.roboto(
-                          fontSize: _responsiveFont(context, 16),
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 13),
+              const SizedBox(height: 60),
               Text(
-                'What are your main Goals ?',
+                'What are your main Goals?',
                 textAlign: TextAlign.center,
                 style: GoogleFonts.roboto(
-                  fontSize: _responsiveFont(context, 32),
-                  color: Colors.black,
+                  fontSize: _responsiveFont(context, 28),
                   fontWeight: FontWeight.bold,
+                  color: Colors.black87,
                 ),
               ),
               const SizedBox(height: 10),
               Text(
-                'Pick one to personalize the plan',
+                'Pick one to personalize your plan',
                 textAlign: TextAlign.center,
                 style: GoogleFonts.roboto(
                   fontSize: _responsiveFont(context, 17),
-                  color: Colors.black,
+                  color: Colors.black54,
                 ),
               ),
-              const SizedBox(height: 100),
+              const SizedBox(height: 60),
 
-              // ✅ Goal Options with updated emojis
-              _goalCard(context, '🔥', 'Lose Weight'),      // Fire emoji for Lose Weight
+              // Goal Cards
+              _goalCard(context, '🔥', 'Lose Weight'),
               const SizedBox(height: 12),
-              _goalCard(context, '🏋️', 'Build Muscle'),    // Weightlifting emoji for Build Muscle
+              _goalCard(context, '🏋️', 'Build Muscle'),
               const SizedBox(height: 12),
-              _goalCard(context, '💪', 'Keep Fit'),         // Biceps emoji for Keep Fit
-
+              _goalCard(context, '💪', 'Keep Fit'),
 
               const Spacer(),
 
-              // NEXT Button (red)
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: AnimatedOpacity(
-                  duration: const Duration(milliseconds: 200),
-                  opacity: selected.isEmpty ? 0.5 : 1,
-                  child: ElevatedButton(
-                    onPressed: selected.isEmpty
-                        ? null
-                        : () => Navigator.of(context).push(slideFadeRoute(const AgeScreen())),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.red,
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                    child: Text(
-                      'NEXT',
-                      style: GoogleFonts.roboto(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
+                child: PrimaryButton(
+                  label: 'NEXT',
+                  onPressed: selected.isEmpty
+                      ? null
+                      : () => Navigator.of(context).push(slideFadeRoute(const AgeScreen())),
                 ),
               ),
               const SizedBox(height: 20),
@@ -130,7 +82,6 @@ class _Onboarding2ScreenState extends State<Onboarding2Screen> {
 
   Widget _goalCard(BuildContext context, String emoji, String title) {
     final isSel = selected == title;
-
     return GestureDetector(
       onTap: () => setState(() => selected = title),
       child: AnimatedScale(
@@ -143,24 +94,16 @@ class _Onboarding2ScreenState extends State<Onboarding2Screen> {
           decoration: BoxDecoration(
             color: const Color(0xFFF2F3F6),
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(
-              color: isSel ? Colors.blue : Colors.transparent,
-              width: 2,
-            ),
+            border: Border.all(color: isSel ? Colors.red : Colors.transparent, width: 2),
           ),
           child: Row(
             children: [
-              // Animated Emoji
               AnimatedScale(
-                scale: isSel ? 1.3 : 1.0, // emoji grows slightly when selected
+                scale: isSel ? 1.3 : 1.0,
                 duration: const Duration(milliseconds: 200),
-                child: Text(
-                  emoji,
-                  style: const TextStyle(fontSize: 32),
-                ),
+                child: Text(emoji, style: const TextStyle(fontSize: 32)),
               ),
               const SizedBox(width: 12),
-              // Title
               Expanded(
                 child: Text(
                   title,
@@ -171,7 +114,6 @@ class _Onboarding2ScreenState extends State<Onboarding2Screen> {
                   ),
                 ),
               ),
-              // Check Icon
               AnimatedContainer(
                 duration: const Duration(milliseconds: 200),
                 width: isSel ? 32 : 0,
@@ -180,9 +122,9 @@ class _Onboarding2ScreenState extends State<Onboarding2Screen> {
                     ? Container(
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    border: Border.all(color: Colors.blue, width: 2),
+                    border: Border.all(color: Colors.red, width: 2),
                   ),
-                  child: const Icon(Icons.check, color: Colors.blue, size: 20),
+                  child: const Icon(Icons.check, color: Colors.red, size: 20),
                 )
                     : null,
               ),

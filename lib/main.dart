@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -27,17 +28,33 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Base text theme with white display/body by default for dark scaffold
     final baseTextTheme = Theme.of(context).textTheme.apply(
       bodyColor: Colors.white,
       displayColor: Colors.white,
     );
 
+    // Red, black, white theme
+    final colorScheme = ColorScheme.fromSeed(
+      seedColor: Colors.red,
+      brightness: Brightness.dark,
+      primary: Colors.red,
+      onPrimary: Colors.white,
+      surface: Colors.black,
+      onSurface: Colors.white,
+      background: Colors.black,
+      onBackground: Colors.white,
+      secondary: Colors.redAccent,
+      onSecondary: Colors.white,
+    );
+
     return MaterialApp(
       title: 'FYT LYF',
       debugShowCheckedModeBanner: false,
+      themeMode: ThemeMode.dark,
       theme: ThemeData(
         useMaterial3: true,
-        primarySwatch: Colors.red,
+        colorScheme: colorScheme,
         scaffoldBackgroundColor: Colors.black,
         visualDensity: VisualDensity.adaptivePlatformDensity,
         textTheme: GoogleFonts.pottaOneTextTheme(baseTextTheme),
@@ -48,19 +65,28 @@ class MyApp extends StatelessWidget {
           systemOverlayStyle: SystemUiOverlayStyle.light,
           foregroundColor: Colors.white,
         ),
+        cupertinoOverrideTheme: const NoDefaultCupertinoThemeData(
+          primaryColor: Colors.red,
+          scaffoldBackgroundColor: Colors.white,
+        ),
       ),
-      initialRoute: SplashScreen.routeName,
+
+      // Use string route keys to avoid static routeName members
+      initialRoute: '/',
       routes: {
-        SplashScreen.routeName: (_) => const SplashScreen(),
-        WelcomeScreen.routeName: (_) => const WelcomeScreen(),
-        Onboarding1Screen.routeName: (_) => const Onboarding1Screen(),
-        Onboarding2Screen.routeName: (_) => const Onboarding2Screen(),
-        AgeScreen.routeName: (_) => const AgeScreen(),
-        WeightHeightScreen.routeName: (_) => const WeightHeightScreen(),
-        TargetWeightScreen.routeName: (_) => const TargetWeightScreen(),
+        '/': (_) => const SplashScreen(),
+        '/welcome': (_) => const WelcomeScreen(),
+        '/onboarding1': (_) => const Onboarding1Screen(),
+        '/onboarding2': (_) => const Onboarding2Screen(),
+        '/age': (_) => const AgeScreen(),
+        '/metrics': (_) => const WeightHeightScreen(),
+        '/target-weight': (_) => const TargetWeightScreen(),
       },
+
+      // Fallback
       onUnknownRoute: (settings) => MaterialPageRoute(
         builder: (_) => const SplashScreen(),
+        settings: const RouteSettings(name: '/'),
       ),
     );
   }

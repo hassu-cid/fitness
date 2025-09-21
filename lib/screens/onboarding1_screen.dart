@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'onboarding2_screen.dart'; // for direct push with animation
+import 'onboarding2_screen.dart';
+import '../widgets/PrimaryButton.dart'; // Import the custom button
 
 class Onboarding1Screen extends StatefulWidget {
   static const routeName = '/onboarding1';
-
   const Onboarding1Screen({super.key});
 
   @override
@@ -17,9 +17,9 @@ class _Onboarding1ScreenState extends State<Onboarding1Screen> {
   double _responsiveFont(BuildContext context, double base) {
     final scale = MediaQuery.of(context).textScaleFactor;
     final width = MediaQuery.of(context).size.width;
-    if (width > 900) return base * 1.8 * scale; // tablets / foldables
-    if (width > 600) return base * 1.4 * scale; // medium screens
-    return base * scale; // phones
+    if (width > 900) return base * 1.8 * scale;
+    if (width > 600) return base * 1.4 * scale;
+    return base * scale;
   }
 
   @override
@@ -52,15 +52,14 @@ class _Onboarding1ScreenState extends State<Onboarding1Screen> {
                       ),
                       const SizedBox(width: 12),
                       GestureDetector(
-                        onTap: () {
-                          // Optional: jump to goals (onboarding2)
-                          Navigator.of(context).push(_slideFade(const Onboarding2Screen()));
-                          // Or named route:
-                          // Navigator.pushNamed(context, '/onboarding2');
-                        },
+                        onTap: () => Navigator.of(context).push(_slideFade(const Onboarding2Screen())),
                         child: Text(
                           'Skip',
-                          style: GoogleFonts.roboto(fontSize: _responsiveFont(context, 20), color: Colors.black, fontWeight: FontWeight.bold),
+                          style: GoogleFonts.roboto(
+                            fontSize: _responsiveFont(context, 20),
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                     ],
@@ -71,9 +70,13 @@ class _Onboarding1ScreenState extends State<Onboarding1Screen> {
 
                 // Title
                 Text(
-                  "What's your gender ?",
+                  "What's your gender?",
                   textAlign: TextAlign.center,
-                  style: GoogleFonts.roboto(fontSize: _responsiveFont(context, 30), color: Colors.black, fontWeight: FontWeight.bold),
+                  style: GoogleFonts.roboto(
+                    fontSize: _responsiveFont(context, 30),
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 const SizedBox(height: 8),
 
@@ -130,50 +133,14 @@ class _Onboarding1ScreenState extends State<Onboarding1Screen> {
 
                 const Spacer(),
 
-                // Next button
+                // ✅ Next Button using PrimaryButton
                 Padding(
                   padding: EdgeInsets.all(isTablet ? 40 : 40),
-                  child: SizedBox(
-                    width: double.infinity,
-                    height: isTablet ? 70 : 55,
-                    child: ElevatedButton(
-                      onPressed: selectedGender == null
-                          ? null
-                          : () {
-                        // With custom slide+fade transition:
-                        Navigator.of(context).push(_slideFade(const Onboarding2Screen()));
-                        // If you want to pass the gender later, you can use named routes with arguments:
-                        // Navigator.pushNamed(context, '/onboarding2', arguments: {'gender': selectedGender});
-                      },
-                      style: ElevatedButton.styleFrom(
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
-                        padding: EdgeInsets.zero,
-                        backgroundColor: Colors.transparent,
-                        disabledBackgroundColor: Colors.grey[300],
-                      ).copyWith(
-                        backgroundColor: MaterialStateProperty.resolveWith<Color?>(
-                              (states) => states.contains(MaterialState.disabled) ? Colors.grey[300] : null,
-                        ),
-                      ),
-                      child: Ink(
-                        decoration: BoxDecoration(
-                          gradient: selectedGender == null
-                              ? null
-                              : const LinearGradient(
-                            colors: [Colors.red, Colors.red],
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                          ),
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Center(
-                          child: Text(
-                            'NEXT',
-                            style: GoogleFonts.roboto(fontSize: _responsiveFont(context, 20), fontWeight: FontWeight.bold, color: Colors.white),
-                          ),
-                        ),
-                      ),
-                    ),
+                  child: PrimaryButton(
+                    label: 'NEXT',
+                    onPressed: selectedGender == null
+                        ? null
+                        : () => Navigator.of(context).push(_slideFade(const Onboarding2Screen())),
                   ),
                 ),
               ],
@@ -195,7 +162,6 @@ class _Onboarding1ScreenState extends State<Onboarding1Screen> {
     required BuildContext context,
   }) {
     final isTablet = size.width > 600;
-
     final containerHeight = isSelected ? size.height * (isTablet ? 0.42 : 0.38) : size.height * (isTablet ? 0.32 : 0.28);
     final containerWidth = isSelected ? size.width * (isTablet ? 0.28 : 0.35) : size.width * (isTablet ? 0.22 : 0.25);
 
@@ -204,7 +170,7 @@ class _Onboarding1ScreenState extends State<Onboarding1Screen> {
       child: Column(
         children: [
           Hero(
-            tag: 'gender_$gender', // safer unique tag
+            tag: 'gender_$gender',
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 350),
               curve: Curves.easeInOut,
@@ -217,7 +183,10 @@ class _Onboarding1ScreenState extends State<Onboarding1Screen> {
                     Container(
                       height: containerHeight,
                       width: containerWidth,
-                      decoration: BoxDecoration(color: highlightColor, borderRadius: BorderRadius.circular(20)),
+                      decoration: BoxDecoration(
+                        color: highlightColor,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
                     ),
                   AnimatedOpacity(
                     duration: const Duration(milliseconds: 300),
@@ -231,7 +200,11 @@ class _Onboarding1ScreenState extends State<Onboarding1Screen> {
           const SizedBox(height: 8),
           Text(
             gender,
-            style: TextStyle(fontSize: _responsiveFont(context, 18), fontWeight: FontWeight.bold, color: isSelected ? Colors.black : Colors.black54),
+            style: TextStyle(
+              fontSize: _responsiveFont(context, 18),
+              fontWeight: FontWeight.bold,
+              color: isSelected ? Colors.black : Colors.black54,
+            ),
           ),
         ],
       ),
@@ -239,7 +212,7 @@ class _Onboarding1ScreenState extends State<Onboarding1Screen> {
   }
 }
 
-// Reusable slide+fade page transition used for moving to Onboarding2
+// Reusable slide+fade page transition
 PageRouteBuilder<T> _slideFade<T>(Widget page) {
   return PageRouteBuilder<T>(
     transitionDuration: const Duration(milliseconds: 380),
