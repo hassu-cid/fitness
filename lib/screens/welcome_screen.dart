@@ -105,8 +105,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                               // FYT LYF with glow
                               Text(
                                 "FYT LYF",
-                                style: TextStyle(
-                                  fontFamily: 'PottaOne',
+                                style: GoogleFonts.pottaOne(
                                   fontSize: logoFontSize,
                                   fontWeight: FontWeight.bold,
                                   color: Colors.white,

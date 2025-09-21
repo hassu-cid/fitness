@@ -7,11 +7,13 @@ import 'screens/splash_screen.dart';
 import 'screens/welcome_screen.dart';
 import 'screens/onboarding1_screen.dart';
 import 'screens/onboarding2_screen.dart';
+import 'screens/age_screen.dart';
+import 'screens/weight_height_screen.dart';
+import 'screens/target_weight_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // ✅ Lock orientation to portrait only
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
@@ -25,41 +27,38 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final baseTextTheme = Theme.of(context).textTheme.apply(
+      bodyColor: Colors.white,
+      displayColor: Colors.white,
+    );
+
     return MaterialApp(
       title: 'FYT LYF',
       debugShowCheckedModeBanner: false,
-
-      // ✅ Theme setup (future-proof & reusable)
       theme: ThemeData(
+        useMaterial3: true,
         primarySwatch: Colors.red,
         scaffoldBackgroundColor: Colors.black,
-        textTheme: GoogleFonts.pottaOneTextTheme(
-          Theme.of(context).textTheme.apply(
-            bodyColor: Colors.white,
-            displayColor: Colors.white,
-          ),
-        ),
         visualDensity: VisualDensity.adaptivePlatformDensity,
+        textTheme: GoogleFonts.pottaOneTextTheme(baseTextTheme),
         appBarTheme: const AppBarTheme(
           backgroundColor: Colors.black,
           elevation: 0,
           centerTitle: true,
           systemOverlayStyle: SystemUiOverlayStyle.light,
+          foregroundColor: Colors.white,
         ),
       ),
-
-      // ✅ Entry point
       initialRoute: SplashScreen.routeName,
-
-      // ✅ Centralized routes (easy to manage in future)
       routes: {
         SplashScreen.routeName: (_) => const SplashScreen(),
         WelcomeScreen.routeName: (_) => const WelcomeScreen(),
         Onboarding1Screen.routeName: (_) => const Onboarding1Screen(),
         Onboarding2Screen.routeName: (_) => const Onboarding2Screen(),
+        AgeScreen.routeName: (_) => const AgeScreen(),
+        WeightHeightScreen.routeName: (_) => const WeightHeightScreen(),
+        TargetWeightScreen.routeName: (_) => const TargetWeightScreen(),
       },
-
-      // ✅ Prevents navigation errors (safety fallback)
       onUnknownRoute: (settings) => MaterialPageRoute(
         builder: (_) => const SplashScreen(),
       ),

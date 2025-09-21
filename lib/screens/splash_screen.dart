@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'welcome_screen.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -143,8 +144,7 @@ class _SplashScreenState extends State<SplashScreen>
                         child: Text(
                           "FYT LYF",
                           textAlign: TextAlign.center,
-                          style: const TextStyle(
-                            fontFamily: "PottaOne", // ✅ Custom font
+                          style: GoogleFonts.pottaOne(
                             fontSize: 35,
                             color: Colors.white,
                             shadows: [
