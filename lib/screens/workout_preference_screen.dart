@@ -2,17 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../ui/adaptive.dart';
 import '../ui/transitions.dart';
-import 'age_screen.dart';
 
-class Onboarding2Screen extends StatefulWidget {
-  static const routeName = '/onboarding2';
-  const Onboarding2Screen({super.key});
+class WorkoutPreferenceScreen extends StatefulWidget {
+  static const routeName = '/workout-preference';
+  const WorkoutPreferenceScreen({super.key});
 
   @override
-  State<Onboarding2Screen> createState() => _Onboarding2ScreenState();
+  State<WorkoutPreferenceScreen> createState() =>
+      _WorkoutPreferenceScreenState();
 }
 
-class _Onboarding2ScreenState extends State<Onboarding2Screen> {
+class _WorkoutPreferenceScreenState extends State<WorkoutPreferenceScreen> {
   String selected = '';
 
   double _responsiveFont(BuildContext context, double base) {
@@ -38,17 +38,19 @@ class _Onboarding2ScreenState extends State<Onboarding2Screen> {
                 child: Row(
                   children: [
                     Expanded(
-                      child: LinearProgressIndicator(
-                        value: 0.5,
-                        minHeight: 4,
+                      child: ClipRRect(
                         borderRadius: BorderRadius.circular(8),
-                        color: Colors.red,
-                        backgroundColor: Colors.grey[300],
+                        child: LinearProgressIndicator(
+                          value: 0.7, // progress example
+                          minHeight: 4,
+                          valueColor: AlwaysStoppedAnimation(Colors.red),
+                          backgroundColor: Colors.grey[300],
+                        ),
                       ),
                     ),
                     const SizedBox(width: 12),
                     GestureDetector(
-                      onTap: () => Navigator.of(context).push(slideFadeRoute(const AgeScreen())),
+                      onTap: () => debugPrint('Skipped Workout Preference'),
                       child: Text(
                         'Skip',
                         style: GoogleFonts.roboto(
@@ -62,71 +64,66 @@ class _Onboarding2ScreenState extends State<Onboarding2Screen> {
                 ),
               ),
 
-              const SizedBox(height: 13),
+              const SizedBox(height: 20),
 
               // Title
               Text(
-                'What are your main Goals ?',
+                'What do you prefer?',
                 textAlign: TextAlign.center,
                 style: GoogleFonts.poppins(
-                  fontSize: _responsiveFont(context, 32),
+                  fontSize: _responsiveFont(context, 28),
                   color: Colors.black,
                   fontWeight: FontWeight.bold,
                 ),
               ),
               const SizedBox(height: 10),
               Text(
-                'Pick one to personalize the plan',
+                'Choose your preferred workout type',
                 textAlign: TextAlign.center,
                 style: GoogleFonts.poppins(
-                  fontSize: _responsiveFont(context, 17),
-                  color: Colors.black,
+                  fontSize: _responsiveFont(context, 16),
+                  color: Colors.black87,
                 ),
               ),
 
-              const SizedBox(height: 100),
+              const SizedBox(height: 40),
 
-              // Goal Options
-              _goalCard(context, '🔥', 'Lose Weight'),
-              const SizedBox(height: 12),
-              _goalCard(context, '🏋️', 'Build Muscle'),
-              const SizedBox(height: 12),
-              _goalCard(context, '💪', 'Keep Fit'),
+              // Options
+              _optionCard(context, '🏠', 'Home Workout'),
+              const SizedBox(height: 16),
+              _optionCard(context, '🏋️‍♂️', 'Gym'),
+              const SizedBox(height: 16),
+              _optionCard(context, '🏃‍♂️', 'Outdoor'),
 
               const Spacer(),
 
-              // NEXT Button (always visible but faded until selection)
+              // NEXT Button
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 0),
-                child: AnimatedOpacity(
-                  duration: const Duration(milliseconds: 200),
-                  opacity: selected.isEmpty ? 0.5 : 1,
-                  child: ElevatedButton(
-
-                    onPressed: () {
-                      if (selected.isNotEmpty) {
-                        Navigator.of(context).push(slideFadeRoute(const AgeScreen()));
-                      }
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.red,
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+                child: ElevatedButton(
+                  onPressed: selected.isEmpty
+                      ? null
+                      : () {
+                    debugPrint("Selected Workout Preference: $selected");
+                    // TODO: Navigate to next screen
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.red,
+                    minimumSize: const Size(double.infinity, 55),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
                     ),
-                    child: Text(
-                      'NEXT',
-                      style: GoogleFonts.roboto(
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
+                  ),
+                  child: Text(
+                    'NEXT',
+                    style: GoogleFonts.roboto(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
                     ),
                   ),
                 ),
               ),
-              const SizedBox(height: 20),
             ],
           ),
         ),
@@ -134,13 +131,13 @@ class _Onboarding2ScreenState extends State<Onboarding2Screen> {
     );
   }
 
-  Widget _goalCard(BuildContext context, String emoji, String title) {
-    final isSel = selected == title;
+  Widget _optionCard(BuildContext context, String emoji, String title) {
+    final isSelected = selected == title;
 
     return GestureDetector(
       onTap: () => setState(() => selected = title),
       child: AnimatedScale(
-        scale: isSel ? 1.05 : 1.0,
+        scale: isSelected ? 1.05 : 1.0,
         duration: const Duration(milliseconds: 200),
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 200),
@@ -150,24 +147,23 @@ class _Onboarding2ScreenState extends State<Onboarding2Screen> {
             color: const Color(0xFFF2F3F6),
             borderRadius: BorderRadius.circular(16),
             border: Border.all(
-              color: isSel ? Colors.blue : Colors.transparent,
+              color: isSelected ? Colors.blue : Colors.transparent,
               width: 2,
             ),
+            boxShadow: isSelected
+                ? [
+              BoxShadow(
+                color: Colors.blue.withOpacity(0.12),
+                blurRadius: 8,
+                offset: const Offset(0, 4),
+              )
+            ]
+                : null,
           ),
           child: Row(
             children: [
-              // Emoji
-              AnimatedScale(
-                scale: isSel ? 1.3 : 1.0,
-                duration: const Duration(milliseconds: 200),
-                child: Text(
-                  emoji,
-                  style: const TextStyle(fontSize: 32),
-                ),
-              ),
+              Text(emoji, style: const TextStyle(fontSize: 32)),
               const SizedBox(width: 12),
-
-              // Title
               Expanded(
                 child: Text(
                   title,
@@ -178,22 +174,16 @@ class _Onboarding2ScreenState extends State<Onboarding2Screen> {
                   ),
                 ),
               ),
-
-              // Check Icon
-              AnimatedContainer(
-                duration: const Duration(milliseconds: 200),
-                width: isSel ? 32 : 0,
-                height: isSel ? 32 : 0,
-                child: isSel
-                    ? Container(
+              if (isSelected)
+                Container(
+                  width: 32,
+                  height: 32,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     border: Border.all(color: Colors.blue, width: 2),
                   ),
                   child: const Icon(Icons.check, color: Colors.blue, size: 20),
-                )
-                    : null,
-              ),
+                ),
             ],
           ),
         ),

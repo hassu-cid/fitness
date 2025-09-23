@@ -58,7 +58,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
     final double buttonFontSize = size.width * 0.05;
 
     // ✅ Smaller button size
-    final double buttonWidth = size.width * 0.8;
+    final double buttonWidth = size.width * 0.9;
     final double buttonHeight = size.height * 0.055;
 
     return Scaffold(

@@ -1,8 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'weight_height_screen.dart'; // ✅ Import WeightHeightScreen
 
 class AgeScreen extends StatefulWidget {
-  static const routeName = '/age'; // ✅ Added routeName for navigation
+  static const String routeName = '/age';
 
   const AgeScreen({Key? key}) : super(key: key);
 
@@ -11,7 +13,6 @@ class AgeScreen extends StatefulWidget {
 }
 
 class _AgeScreenState extends State<AgeScreen> {
-  // ✅ Configurable age range
   final int minAge = 13;
   final int maxAge = 100;
 
@@ -21,7 +22,7 @@ class _AgeScreenState extends State<AgeScreen> {
   @override
   void initState() {
     super.initState();
-    _selectedAge = 27; // ✅ Default age
+    _selectedAge = 27;
     final initialIndex = _selectedAge - minAge;
     _controller = FixedExtentScrollController(initialItem: initialIndex);
   }
@@ -32,7 +33,6 @@ class _AgeScreenState extends State<AgeScreen> {
     super.dispose();
   }
 
-  // ✅ App-wide color theme
   Color get bg => Colors.white;
   Color get textPrimary => Colors.black;
   Color get accentRed => Colors.red;
@@ -43,55 +43,53 @@ class _AgeScreenState extends State<AgeScreen> {
       backgroundColor: bg,
       body: SafeArea(
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // 🔹 Top bar with back + step text + skip
+            // 🔹 Progress bar + Skip
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-              child: SizedBox(
-                height: 44,
-                child: Row(
-                  children: [
-                    CupertinoButton(
-                      padding: EdgeInsets.zero,
-                      minSize: 36,
-                      onPressed: () => Navigator.of(context).maybePop(),
-                      child: Icon(CupertinoIcons.back, color: textPrimary),
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: LinearProgressIndicator(
+                      value: 0.75,
+                      minHeight: 4,
+                      borderRadius: BorderRadius.circular(8),
+                      color: accentRed,
+                      backgroundColor: const Color(0xFFE5E7EB),
                     ),
-                    const SizedBox(width: 4),
-
-                    CupertinoButton(
-                      padding: const EdgeInsets.symmetric(horizontal: 8),
-                      minSize: 32,
-                      onPressed: () {
-                        // ✅ Handle Skip navigation here
-                      },
-                      child: Text(
-                        'Skip',
-                        style: TextStyle(
-                          color: textPrimary.withOpacity(0.9),
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                        ),
+                  ),
+                  const SizedBox(width: 12),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.pushReplacementNamed(
+                          context, WeightHeightScreen.routeName);
+                    },
+                    child: Text(
+                      'Skip',
+                      style: GoogleFonts.roboto(
+                        fontSize: 16,
+                        color: textPrimary,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
 
+            const SizedBox(height: 20),
+
             // 🔹 Title
             Padding(
-              padding: const EdgeInsets.fromLTRB(20, 8, 20, 0),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  'HOW OLD ARE YOU?',
-                  style: TextStyle(
-                    color: textPrimary,
-                    fontSize: 24,
-                    fontWeight: FontWeight.w800,
-                    letterSpacing: 0.5,
-                  ),
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Text(
+                'How Old Are You ?',
+                style: GoogleFonts.poppins(
+                  color: textPrimary,
+                  fontSize: 30,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 0.5,
                 ),
               ),
             ),
@@ -124,9 +122,9 @@ class _AgeScreenState extends State<AgeScreen> {
                         return Center(
                           child: Text(
                             '$age',
-                            style: TextStyle(
+                            style: GoogleFonts.roboto(
                               color: isSelected
-                                  ? Colors.red // ✅ Highlighted red
+                                  ? Colors.black
                                   : textPrimary.withOpacity(0.5),
                               fontSize: isSelected ? 22 : 18,
                               fontWeight: isSelected
@@ -142,33 +140,41 @@ class _AgeScreenState extends State<AgeScreen> {
               ),
             ),
 
-            // 🔹 Bottom Primary Button
+            // 🔹 NEXT Button
             Padding(
-              padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 20),
               child: SizedBox(
                 width: double.infinity,
-                height: 52,
-                child: CupertinoButton(
-                  padding: EdgeInsets.zero,
-                  color: accentRed,
-                  borderRadius: BorderRadius.circular(10),
+                child: ElevatedButton(
                   onPressed: () {
-                    // ✅ Use _selectedAge here
                     debugPrint("Selected Age: $_selectedAge");
-                    // Example: Navigator.pushNamed(context, NextScreen.routeName);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const WeightHeightScreen(),
+                      ),
+                    );
                   },
-                  child: const Text(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: accentRed,
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                  ),
+                  child: Text(
                     'NEXT',
-                    style: TextStyle(
+                    style: GoogleFonts.roboto(
                       color: Colors.white,
-                      letterSpacing: 0.8,
-                      fontWeight: FontWeight.w700,
-                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 22,
+                      letterSpacing: 0.5,
                     ),
                   ),
                 ),
               ),
             ),
+            const SizedBox(height: 10)
           ],
         ),
       ),
@@ -176,7 +182,6 @@ class _AgeScreenState extends State<AgeScreen> {
   }
 }
 
-// ✅ Custom selection overlay with subtle highlight
 class _SelectionOverlay extends StatelessWidget {
   const _SelectionOverlay({Key? key}) : super(key: key);
 
@@ -187,7 +192,7 @@ class _SelectionOverlay extends StatelessWidget {
         margin: const EdgeInsets.symmetric(horizontal: 90),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8),
-          border: Border.all(color: Colors.red, width: 1.5), // ✅ Red outline
+          border: Border.all(color: Colors.blue, width: 2),
         ),
       ),
     );

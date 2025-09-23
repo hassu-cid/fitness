@@ -10,10 +10,13 @@ dependencies:
   flutter:
     sdk: flutter
   google_fonts: ^6.3.1   # Roboto (and many others) come from here
+  numberpicker: ^2.1.2
+
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
 
 flutter:
   uses-material-design: true

@@ -2,17 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../ui/adaptive.dart';
 import '../ui/transitions.dart';
-import 'age_screen.dart';
+import 'weekly_goal_screen.dart'; // ✅ Next screen after experience
 
-class Onboarding2Screen extends StatefulWidget {
-  static const routeName = '/onboarding2';
-  const Onboarding2Screen({super.key});
+class ExperienceLevelScreen extends StatefulWidget {
+  static const routeName = '/experience-level';
+  const ExperienceLevelScreen({super.key});
 
   @override
-  State<Onboarding2Screen> createState() => _Onboarding2ScreenState();
+  State<ExperienceLevelScreen> createState() => _ExperienceLevelScreenState();
 }
 
-class _Onboarding2ScreenState extends State<Onboarding2Screen> {
+class _ExperienceLevelScreenState extends State<ExperienceLevelScreen> {
   String selected = '';
 
   double _responsiveFont(BuildContext context, double base) {
@@ -39,7 +39,7 @@ class _Onboarding2ScreenState extends State<Onboarding2Screen> {
                   children: [
                     Expanded(
                       child: LinearProgressIndicator(
-                        value: 0.5,
+                        value: 0.9, // progress example
                         minHeight: 4,
                         borderRadius: BorderRadius.circular(8),
                         color: Colors.red,
@@ -48,7 +48,7 @@ class _Onboarding2ScreenState extends State<Onboarding2Screen> {
                     ),
                     const SizedBox(width: 12),
                     GestureDetector(
-                      onTap: () => Navigator.of(context).push(slideFadeRoute(const AgeScreen())),
+                      onTap: () => Navigator.of(context).push(slideFadeRoute(const WeeklyGoalScreen())),
                       child: Text(
                         'Skip',
                         style: GoogleFonts.roboto(
@@ -66,7 +66,7 @@ class _Onboarding2ScreenState extends State<Onboarding2Screen> {
 
               // Title
               Text(
-                'What are your main Goals ?',
+                'What is Your Experience Level?',
                 textAlign: TextAlign.center,
                 style: GoogleFonts.poppins(
                   fontSize: _responsiveFont(context, 32),
@@ -76,7 +76,7 @@ class _Onboarding2ScreenState extends State<Onboarding2Screen> {
               ),
               const SizedBox(height: 10),
               Text(
-                'Pick one to personalize the plan',
+                'How many push-ups can you do at one time?',
                 textAlign: TextAlign.center,
                 style: GoogleFonts.poppins(
                   fontSize: _responsiveFont(context, 17),
@@ -86,26 +86,26 @@ class _Onboarding2ScreenState extends State<Onboarding2Screen> {
 
               const SizedBox(height: 100),
 
-              // Goal Options
-              _goalCard(context, '🔥', 'Lose Weight'),
+              // Experience Options with more relevant emojis
+              _experienceCard(context, '💪', 'Beginner (0-10)'),
               const SizedBox(height: 12),
-              _goalCard(context, '🏋️', 'Build Muscle'),
+              _experienceCard(context, '🏋️‍♂️', 'Intermediate (11-30)'),
               const SizedBox(height: 12),
-              _goalCard(context, '💪', 'Keep Fit'),
+              _experienceCard(context, '🔥', 'Advanced (30+)'),
+
 
               const Spacer(),
 
-              // NEXT Button (always visible but faded until selection)
+              // NEXT Button
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 0),
                 child: AnimatedOpacity(
                   duration: const Duration(milliseconds: 200),
                   opacity: selected.isEmpty ? 0.5 : 1,
                   child: ElevatedButton(
-
                     onPressed: () {
                       if (selected.isNotEmpty) {
-                        Navigator.of(context).push(slideFadeRoute(const AgeScreen()));
+                        Navigator.of(context).push(slideFadeRoute(const WeeklyGoalScreen()));
                       }
                     },
                     style: ElevatedButton.styleFrom(
@@ -134,7 +134,7 @@ class _Onboarding2ScreenState extends State<Onboarding2Screen> {
     );
   }
 
-  Widget _goalCard(BuildContext context, String emoji, String title) {
+  Widget _experienceCard(BuildContext context, String emoji, String title) {
     final isSel = selected == title;
 
     return GestureDetector(
